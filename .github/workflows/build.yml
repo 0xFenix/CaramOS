@@ -99,28 +99,39 @@ jobs:
 
           DOWNLOAD_URL="https://sourceforge.net/projects/${SOURCEFORGE_PROJECT}/files/${GITHUB_REF_NAME}/${ISO_BASENAME}/download"
           CHECKSUM_URL="https://sourceforge.net/projects/${SOURCEFORGE_PROJECT}/files/${GITHUB_REF_NAME}/SHA256SUMS/download"
-          cat > RELEASE_DOWNLOADS.md <<EOF
-## Download CaramOS ${GITHUB_REF_NAME}
+          python3 - <<PY
+          from pathlib import Path
 
-> GitHub Release cannot host the ISO directly because release assets have a
-> per-file size limit. The ISO is hosted as one complete file on SourceForge.
+          github_ref_name = "${GITHUB_REF_NAME}"
+          iso_basename = "${ISO_BASENAME}"
+          download_url = "${DOWNLOAD_URL}"
+          checksum_url = "${CHECKSUM_URL}"
+          sourceforge_project = "${SOURCEFORGE_PROJECT}"
 
-<p align="center">
-  <a href="${DOWNLOAD_URL}">
-    <img src="https://img.shields.io/badge/Download-CaramOS%20ISO-ff6b00?style=for-the-badge&logo=linux&logoColor=white" alt="Download CaramOS ISO">
-  </a>
-</p>
+          release_body = f"""## Download CaramOS {github_ref_name}
 
-- **ISO:** [${ISO_BASENAME}](${DOWNLOAD_URL})
-- **SHA256SUMS:** [SHA256SUMS](${CHECKSUM_URL})
-- **SourceForge folder:** https://sourceforge.net/projects/${SOURCEFORGE_PROJECT}/files/${GITHUB_REF_NAME}/
+          > GitHub Release cannot host the ISO directly because release assets have a
+          > per-file size limit. The ISO is hosted as one complete file on SourceForge.
 
-### Verify the ISO
+          <p align="center">
+            <a href="{download_url}">
+              <img src="https://img.shields.io/badge/Download-CaramOS%20ISO-ff6b00?style=for-the-badge&logo=linux&logoColor=white" alt="Download CaramOS ISO">
+            </a>
+          </p>
 
-\`\`\`bash
-sha256sum -c SHA256SUMS
-\`\`\`
-EOF
+          - **ISO:** [{iso_basename}]({download_url})
+          - **SHA256SUMS:** [SHA256SUMS]({checksum_url})
+          - **SourceForge folder:** https://sourceforge.net/projects/{sourceforge_project}/files/{github_ref_name}/
+
+          ### Verify the ISO
+
+          ```bash
+          sha256sum -c SHA256SUMS
+          ```
+          """
+
+          Path("RELEASE_DOWNLOADS.md").write_text(release_body, encoding="utf-8")
+          PY
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
