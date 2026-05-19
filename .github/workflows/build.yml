@@ -94,8 +94,11 @@ jobs:
           ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
 
           RELEASE_DIR="/home/frs/project/${SOURCEFORGE_PROJECT}/${GITHUB_REF_NAME}"
-          ssh -i ~/.ssh/sourceforge "${SOURCEFORGE_USERNAME}@frs.sourceforge.net" "mkdir -p '${RELEASE_DIR}'"
-          rsync -avP -e "ssh -i ~/.ssh/sourceforge" "${ISO_FILE}" SHA256SUMS "${SOURCEFORGE_USERNAME}@frs.sourceforge.net:${RELEASE_DIR}/"
+          scp -i ~/.ssh/sourceforge \
+            -o IdentitiesOnly=yes \
+            "${ISO_FILE}" \
+            SHA256SUMS \
+            "${SOURCEFORGE_USERNAME}@frs.sourceforge.net:${RELEASE_DIR}/"
 
           DOWNLOAD_URL="https://sourceforge.net/projects/${SOURCEFORGE_PROJECT}/files/${GITHUB_REF_NAME}/${ISO_BASENAME}/download"
           CHECKSUM_URL="https://sourceforge.net/projects/${SOURCEFORGE_PROJECT}/files/${GITHUB_REF_NAME}/SHA256SUMS/download"
