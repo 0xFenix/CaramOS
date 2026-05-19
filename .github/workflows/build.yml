@@ -95,7 +95,7 @@ jobs:
 
           RELEASE_DIR="/home/frs/project/${SOURCEFORGE_PROJECT}/${GITHUB_REF_NAME}"
           cat > upload-release.sftp <<EOF
-          mkdir ${RELEASE_DIR}
+          -mkdir ${RELEASE_DIR}
           cd ${RELEASE_DIR}
           put ${ISO_FILE}
           put SHA256SUMS

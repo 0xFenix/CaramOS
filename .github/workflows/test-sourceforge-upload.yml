@@ -49,8 +49,8 @@ jobs:
 
           RELEASE_DIR="/home/frs/project/${SOURCEFORGE_PROJECT}/_upload-test/${GITHUB_RUN_ID}"
           cat > sourceforge-test/upload.sftp <<EOF
-          mkdir /home/frs/project/${SOURCEFORGE_PROJECT}/_upload-test
-          mkdir ${RELEASE_DIR}
+          -mkdir /home/frs/project/${SOURCEFORGE_PROJECT}/_upload-test
+          -mkdir ${RELEASE_DIR}
           cd ${RELEASE_DIR}
           put sourceforge-test/github-actions-upload-test.txt
           put sourceforge-test/SHA256SUMS
